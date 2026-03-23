@@ -107,11 +107,12 @@
   .stop-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid; background: var(--paper); flex-shrink: 0; margin-top: 5px; }
   .stop-connector { width: 1px; flex: 1; min-height: 20px; background: var(--border); margin: 4px 0; }
   .stop-body { padding-bottom: 32px; }
-  .stop-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; }
+  .stop-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: row; align-items: stretch; }
   .stop-card:hover { transform: translateY(-2px); box-shadow: 0 6px 32px rgba(26,26,24,0.12); }
-  .stop-card-img { width: 100%; height: 180px; object-fit: cover; display: block; background: var(--paper2); }
+  .stop-card-img { width: 140px; min-width: 140px; height: auto; object-fit: cover; display: block; background: var(--paper2); order: 2; }
   .stop-card-img.errored { display: none; }
-  .stop-card-body { padding: 20px 24px; }
+  .stop-card-body { padding: 20px 24px; flex: 1; order: 1; }
+  @media (max-width: 500px) { .stop-card-img { width: 100px; min-width: 100px; } }
   .stop-name { font-family: 'Shippori Mincho', serif; font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
   .stop-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .tag { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; }
@@ -120,6 +121,7 @@
   .tag-culture { background: var(--gold-light); color: var(--gold); }
   .tag-food { background: #fdecea; color: var(--red); }
   .tag-transit { background: var(--paper2); color: var(--muted); }
+  .tag-flight { background: var(--paper2); color: var(--muted); }
   .stop-note { font-size: 14px; color: var(--muted); line-height: 1.65; }
   .maps-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 12px; font-weight: 500; color: var(--green); text-decoration: none; background: var(--green-light); border: 1px solid var(--green-light); padding: 4px 10px; border-radius: 20px; transition: all 0.15s; }
   .maps-link:hover { background: var(--green); color: #fff; }
@@ -368,13 +370,13 @@ function renderDays(days){
           ${!isLast?'<div class="stop-connector"></div>':''}
         </div>
         <div class="stop-body"><div class="stop-card">
-          ${s.img_url?`<img class="stop-card-img" src="${s.img_url}" alt="${s.name}" loading="lazy" onerror="this.classList.add('errored')">`:''}
           <div class="stop-card-body">
             <div class="stop-name">${s.name}</div>
             ${tagHtml?`<div class="stop-tags">${tagHtml}</div>`:''}
             <div class="stop-note">${s.note}</div>
             ${s.maps_url?`<a class="maps-link" href="${s.maps_url}" target="_blank" rel="noopener">📍 Open in Maps</a>`:''}
           </div>
+          ${s.img_url?`<img class="stop-card-img" src="${s.img_url}" alt="${s.name}" loading="lazy" onerror="this.classList.add('errored')">`:''}
         </div></div>
       </div>`;
     }).join("");
