@@ -126,6 +126,16 @@
   .stop-note { font-size: 14px; color: var(--muted); line-height: 1.65; }
   .maps-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 12px; font-weight: 500; color: var(--green); text-decoration: none; background: var(--green-light); border: 1px solid var(--green-light); padding: 4px 10px; border-radius: 20px; transition: all 0.15s; }
   .maps-link:hover { background: var(--green); color: #fff; }
+  .options-label { font-size: 10px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin: 12px 0 7px; }
+  .options-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 4px; }
+  .option-row { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .option-row:last-child { border-bottom: none; }
+  .option-top { display: flex; align-items: center; gap: 8px; }
+  .option-or { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); background: var(--gold-light); padding: 2px 6px; border-radius: 6px; flex-shrink: 0; }
+  .option-name { font-size: 13px; font-weight: 500; color: var(--ink); flex: 1; }
+  .option-note { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .option-maps { font-size: 11px; font-weight: 500; color: var(--green); text-decoration: none; margin-top: 3px; display: inline-block; }
+  .option-maps:hover { text-decoration: underline; }
 
   /* TIP */
   .tip-box { margin-top: 40px; background: var(--ink); color: #fff; border-radius: 14px; padding: 24px 28px; display: flex; gap: 16px; align-items: flex-start; }
@@ -320,7 +330,7 @@ function groupByDay(rows){
   rows.forEach(r=>{
     const n=r.day_number;
     if(!map[n]) map[n]={ num:n, label:r.day_label||`Day ${n}`, city:(r.city||"tokyo").toLowerCase(), title:r.day_title||"", desc:r.day_description||"", tip:r.day_tip||"", stops:[] };
-    if(r.stop_name) map[n].stops.push({ time:r.stop_time||"", name:r.stop_name||"", tags:r.stop_tags||"", note:r.stop_note||"", maps_url:r.stop_maps_url||"", img_url:r.stop_image_url||"" });
+    if(r.stop_name) map[n].stops.push({ time:r.stop_time||"", name:r.stop_name||"", tags:r.stop_tags||"", note:r.stop_note||"", maps_url:r.stop_maps_url||"", img_url:r.stop_image_url||"", options:r.stop_options||"", option_notes:r.stop_option_notes||"", option_urls:r.stop_option_urls||"" });
   });
   return Object.values(map).sort((a,b)=>Number(a.num)-Number(b.num));
 }
@@ -376,6 +386,22 @@ function renderDays(days){
             ${tagHtml?`<div class="stop-tags">${tagHtml}</div>`:''}
             <div class="stop-note">${s.note}</div>
             ${s.maps_url?`<a class="maps-link" href="${s.maps_url}" target="_blank" rel="noopener">📍 Open in Maps</a>`:''}
+            ${(()=>{
+              if(!s.options) return '';
+              const names  = s.options.split('|').map(x=>x.trim()).filter(Boolean);
+              const notes  = s.option_notes ? s.option_notes.split('|').map(x=>x.trim()) : [];
+              const urls   = s.option_urls  ? s.option_urls.split('|').map(x=>x.trim())  : [];
+              const rows   = names.map((name,i)=>`
+                <div class="option-row">
+                  <div class="option-top">
+                    ${i>0?'<span class="option-or">or</span>':''}
+                    <div class="option-name">${name}</div>
+                  </div>
+                  ${notes[i]?`<div class="option-note">${notes[i]}</div>`:''}
+                  ${urls[i]?`<a class="option-maps" href="${urls[i]}" target="_blank" rel="noopener">📍 Maps</a>`:''}
+                </div>`).join('');
+              return `<div class="options-label">Options</div><div class="options-list">${rows}</div>`;
+            })()}
           </div>
           ${s.img_url?`<img class="stop-card-img" src="${s.img_url}" alt="${s.name}" loading="lazy" onerror="this.classList.add('errored')">`:''}
         </div></div>
