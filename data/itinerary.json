@@ -428,12 +428,12 @@
           "options": []
         },
         {
-          "name": "Lunch",
+          "name": "Sanrokuen",
           "time": "Lunch",
           "tags": "food",
-          "note": "Grab something light at the café inside Oishi Park area, or pack snacks — you're heading west next and there's a café at the traditional village.",
-          "maps_url": "",
-          "img_url": "",
+          "note": "This restaurant is inside a 150 year old traditional Japanese house and the atmosphere is incredible. You sit on the floor around a charcoal hearth called an irori and grill your own skewers of fish and meat.",
+          "maps_url": "https://maps.app.goo.gl/annrojkBovGEahnR9",
+          "img_url": "https://res-3.cloudinary.com/dbm1qiew0/image/upload/q_auto/v1/blog-images/-robatayaki-and-irori.png",
           "options": []
         },
         {
@@ -452,6 +452,15 @@
           "note": "¥100 sunflower seeds, birds on your hand, forest trail. ⚠️ Closed Thursdays.",
           "maps_url": "https://maps.app.goo.gl/tMYwiJNsmhcPo7Wg9",
           "img_url": "",
+          "options": []
+        },
+        {
+          "name": "Narusawa Ice Cave",
+          "time": "",
+          "tags": "nature",
+          "note": "The Narusawa Ice Cave is a lava tube located in the Aokigahara forest, in the part that belongs to Narusawa Village, Yamanashi Prefecture, Japan. It is one of the three larger lava tubes at the northern foot of Mount Fuji, the other two caves being Fugaku Wind Cave and Lake Sai Bat Cave.",
+          "maps_url": "https://share.google/NZW33nWrLUTfmlGqX",
+          "img_url": "https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_862/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/odjbvwledpydoaum1er3/MtFuji5thStationNarusawaIceCaveDayTourMuscatGrapePickingandAll-You-Can-EatExperience(DepartfromShinjuku).jpg",
           "options": []
         },
         {
