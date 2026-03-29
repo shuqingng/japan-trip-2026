@@ -188,6 +188,11 @@
   .stop-drag-handle { display: none; cursor: grab; color: var(--muted); font-size: 14px; padding: 2px 4px; margin-right: 4px; }
   body.edit-mode .stop-drag-handle { display: inline; }
 
+  /* Drag-and-drop states */
+  .stop-row.dragging { opacity: 0.4; }
+  .stop-row.drag-over-above { border-top: 2px solid var(--green); }
+  .stop-row.drag-over-below { border-bottom: 2px solid var(--green); }
+
   /* Edit floating action bar */
   #edit-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: var(--ink); color: #fff; padding: 12px 24px; display: none; align-items: center; gap: 12px; flex-wrap: wrap; box-shadow: 0 -4px 24px rgba(0,0,0,0.18); }
   body.edit-mode #edit-bar { display: flex; }
@@ -776,7 +781,11 @@ function buildStopHtml(d, s, si, isLast) {
     optionsHtml = `<div class="options-label">Options</div><div class="options-list">${rows}</div>`;
   }
 
-  return `<div class="stop-row" id="stop-row-${di}-${si}">
+  return `<div class="stop-row" id="stop-row-${di}-${si}" draggable="false"
+      ondragstart="stopDragStart(event,${di},${si})"
+      ondragover="stopDragOver(event,${di},${si})"
+      ondrop="stopDrop(event,${di},${si})"
+      ondragend="stopDragEnd(event)">
     <div class="stop-time-col"><div class="stop-time">${escHtml(s.time)}</div></div>
     <div class="stop-line-col">
       <div class="stop-dot" style="border-color:${dc}"></div>
@@ -784,6 +793,7 @@ function buildStopHtml(d, s, si, isLast) {
     </div>
     <div class="stop-body"><div class="stop-card">
       <div class="stop-edit-controls">
+        <span class="stop-drag-handle" title="Drag to reorder" onmousedown="enableDrag(event)">⠿</span>
         <button class="btn-edit" title="Edit stop" onclick="openStopModal(${di},${si})">✏️</button>
         <button class="btn-delete" title="Delete stop" onclick="deleteStop(${di},${si})">🗑</button>
       </div>
@@ -876,6 +886,62 @@ function deleteStop(di, si) {
   state.days[di].stops.splice(si, 1);
   persistToLS();
   rerenderDayStops(di);
+}
+
+// --- Stop drag-and-drop reordering ---
+let _drag = null; // { di, si }
+
+function enableDrag(e) {
+  // Make the parent stop-row draggable on mousedown of the handle
+  const row = e.currentTarget.closest(".stop-row");
+  if (row) row.draggable = true;
+}
+
+function stopDragStart(e, di, si) {
+  if (!state.editMode) { e.preventDefault(); return; }
+  _drag = { di, si };
+  e.currentTarget.classList.add("dragging");
+  e.dataTransfer.effectAllowed = "move";
+}
+
+function stopDragOver(e, di, si) {
+  if (!_drag || (_drag.di === di && _drag.si === si)) return;
+  if (_drag.di !== di) return; // only reorder within same day
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "move";
+  const row = e.currentTarget;
+  // Determine if cursor is in upper or lower half
+  const rect = row.getBoundingClientRect();
+  const mid = rect.top + rect.height / 2;
+  document.querySelectorAll(".stop-row").forEach(r => r.classList.remove("drag-over-above", "drag-over-below"));
+  row.classList.add(e.clientY < mid ? "drag-over-above" : "drag-over-below");
+}
+
+function stopDrop(e, di, si) {
+  if (!_drag || _drag.di !== di) return;
+  e.preventDefault();
+  const from = _drag.si;
+  const row = e.currentTarget;
+  const rect = row.getBoundingClientRect();
+  const mid = rect.top + rect.height / 2;
+  let to = e.clientY < mid ? si : si + 1;
+  // Adjust for removal offset
+  if (from < to) to--;
+  if (from === to) return;
+  const stops = state.days[di].stops;
+  const [moved] = stops.splice(from, 1);
+  stops.splice(to, 0, moved);
+  persistToLS();
+  rerenderDayStops(di);
+  _drag = null;
+}
+
+function stopDragEnd(e) {
+  document.querySelectorAll(".stop-row").forEach(r => {
+    r.classList.remove("dragging", "drag-over-above", "drag-over-below");
+    r.draggable = false;
+  });
+  _drag = null;
 }
 
 // --- Day modal ---
