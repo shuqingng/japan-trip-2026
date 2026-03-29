@@ -119,7 +119,11 @@
   .stop-card-img { width: 140px; min-width: 140px; height: auto; object-fit: cover; display: block; background: var(--paper2); order: 2; }
   .stop-card-img.errored { display: none; }
   .stop-card-body { padding: 20px 24px; flex: 1; order: 1; }
-  @media (max-width: 500px) { .stop-card-img { width: 100px; min-width: 100px; } }
+  @media (max-width: 600px) {
+    .stop-card { flex-direction: column; }
+    .stop-card-img { width: 100%; min-width: unset; max-height: 200px; object-fit: cover; order: 2; }
+    .stop-card-body { order: 1; }
+  }
   .stop-name { font-family: 'Shippori Mincho', serif; font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
   .stop-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .tag { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; }
