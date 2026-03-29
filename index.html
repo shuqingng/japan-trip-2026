@@ -61,10 +61,14 @@
   /* NAV */
   .nav-strip { position: sticky; top: 0; z-index: 100; background: rgba(245,240,232,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 0 24px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .nav-strip::-webkit-scrollbar { display: none; }
-  .nav-inner { display: flex; max-width: 1100px; margin: 0 auto; min-width: max-content; }
+  .nav-inner { display: flex; max-width: 1100px; margin: 0 auto; min-width: max-content; align-items: center; }
   .nav-btn { padding: 14px 20px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400; color: var(--muted); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
   .nav-btn:hover { color: var(--ink); }
   .nav-btn.active { color: var(--ink); border-bottom-color: var(--ink); font-weight: 500; }
+  .nav-spacer { flex: 1; min-width: 16px; }
+  .edit-toggle-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--muted); background: var(--paper2); border: 1px solid var(--border); border-radius: 20px; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; margin: 8px 0; }
+  .edit-toggle-btn:hover { color: var(--ink); border-color: rgba(26,26,24,0.3); }
+  .edit-toggle-btn.active { color: #fff; background: var(--ink); border-color: var(--ink); }
 
   /* MAIN */
   .main { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
@@ -75,9 +79,11 @@
   .section-title { font-family: 'Shippori Mincho', serif; font-size: clamp(28px,4vw,40px); font-weight: 700; color: var(--ink); margin-bottom: 4px; }
   .section-sub { font-size: 14px; color: var(--muted); line-height: 1.6; }
 
-  /* LIVE BADGE */
-  .live-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); background: var(--paper2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; margin-top: 12px; }
-  .live-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #2d9a4e; flex-shrink: 0; animation: pulse 2s ease-in-out infinite; }
+  /* DATA SOURCE BADGE */
+  .source-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); background: var(--paper2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; margin-top: 12px; }
+  .source-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #2d9a4e; flex-shrink: 0; animation: pulse 2s ease-in-out infinite; }
+  .source-badge.sheets .dot { background: #4285f4; }
+  .source-badge.local .dot { background: #2d9a4e; }
 
   /* OVERVIEW */
   .overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 32px; }
@@ -108,7 +114,7 @@
   .stop-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid; background: var(--paper); flex-shrink: 0; margin-top: 5px; }
   .stop-connector { width: 1px; flex: 1; min-height: 20px; background: var(--border); margin: 4px 0; }
   .stop-body { padding-bottom: 32px; }
-  .stop-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: row; align-items: stretch; }
+  .stop-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: row; align-items: stretch; position: relative; }
   .stop-card:hover { transform: translateY(-2px); box-shadow: 0 6px 32px rgba(26,26,24,0.12); }
   .stop-card-img { width: 140px; min-width: 140px; height: auto; object-fit: cover; display: block; background: var(--paper2); order: 2; }
   .stop-card-img.errored { display: none; }
@@ -153,6 +159,79 @@
 
   footer { background: var(--ink); color: rgba(255,255,255,0.4); text-align: center; padding: 32px 24px; font-size: 12px; letter-spacing: 0.05em; }
 
+  /* ── EDIT MODE ── */
+
+  /* Edit controls on stop cards */
+  .stop-edit-controls { display: none; position: absolute; top: 8px; right: 8px; z-index: 10; gap: 4px; }
+  body.edit-mode .stop-edit-controls { display: flex; }
+  .stop-edit-controls button { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .stop-edit-controls button:hover { background: var(--paper2); }
+  .stop-edit-controls .btn-delete:hover { background: #fdecea; border-color: #f5c6c2; }
+
+  /* Day section edit row */
+  .day-edit-row { display: none; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  body.edit-mode .day-edit-row { display: flex; }
+  .day-edit-row button { display: flex; align-items: center; gap: 5px; padding: 6px 12px; font-size: 12px; font-weight: 500; border-radius: 8px; border: 1px solid var(--border); background: #fff; cursor: pointer; color: var(--muted); transition: all 0.15s; }
+  .day-edit-row button:hover { color: var(--ink); border-color: rgba(26,26,24,0.3); background: var(--paper2); }
+  .day-edit-row .btn-add-stop { color: var(--green); border-color: var(--green-light); background: var(--green-light); }
+  .day-edit-row .btn-add-stop:hover { background: var(--green); color: #fff; border-color: var(--green); }
+  .day-edit-row .btn-delete-day { color: var(--red); border-color: var(--red-light); }
+  .day-edit-row .btn-delete-day:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+  /* Add day button */
+  .add-day-row { display: none; margin-top: 60px; text-align: center; }
+  body.edit-mode .add-day-row { display: block; }
+  .btn-add-day { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; font-size: 14px; font-weight: 500; border-radius: 12px; border: 2px dashed var(--border); background: transparent; cursor: pointer; color: var(--muted); transition: all 0.2s; }
+  .btn-add-day:hover { border-color: var(--ink); color: var(--ink); background: var(--paper2); }
+
+  /* Stop reorder handles */
+  .stop-drag-handle { display: none; cursor: grab; color: var(--muted); font-size: 14px; padding: 2px 4px; margin-right: 4px; }
+  body.edit-mode .stop-drag-handle { display: inline; }
+
+  /* Edit floating action bar */
+  #edit-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: var(--ink); color: #fff; padding: 12px 24px; display: none; align-items: center; gap: 12px; flex-wrap: wrap; box-shadow: 0 -4px 24px rgba(0,0,0,0.18); }
+  body.edit-mode #edit-bar { display: flex; }
+  #edit-bar .bar-label { font-size: 13px; color: rgba(255,255,255,0.6); flex: 1; }
+  #edit-bar .bar-label strong { color: #fff; }
+  .bar-btn { padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; }
+  .bar-btn-export { background: var(--green); color: #fff; }
+  .bar-btn-export:hover { background: #245a32; }
+  .bar-btn-discard { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+  .bar-btn-discard:hover { background: rgba(255,255,255,0.2); color: #fff; }
+  .bar-dirty-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); flex-shrink: 0; display: none; animation: pulse 2s ease-in-out infinite; }
+  body.has-changes #edit-bar .bar-dirty-dot { display: block; }
+  body.has-changes #edit-bar .bar-label::after { content: ' — unsaved changes'; color: var(--gold); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26,26,24,0.55); z-index: 500; align-items: center; justify-content: center; padding: 16px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--paper); border-radius: 16px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.25); }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid var(--border); }
+  .modal-title { font-family: 'Shippori Mincho', serif; font-size: 18px; font-weight: 700; color: var(--ink); }
+  .modal-close { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--muted); transition: all 0.15s; }
+  .modal-close:hover { background: var(--paper2); color: var(--ink); }
+  .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-label { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .form-hint { font-size: 11px; color: var(--muted); margin-top: 2px; opacity: 0.7; }
+  .form-input, .form-textarea, .form-select { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink); background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; outline: none; transition: border-color 0.15s; width: 100%; }
+  .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--ink); }
+  .form-textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  .modal-footer { display: flex; gap: 8px; justify-content: flex-end; padding: 16px 24px; border-top: 1px solid var(--border); }
+  .modal-footer .btn-cancel { padding: 9px 18px; font-size: 13px; font-weight: 500; border-radius: 8px; border: 1px solid var(--border); background: #fff; cursor: pointer; color: var(--muted); transition: all 0.15s; }
+  .modal-footer .btn-cancel:hover { color: var(--ink); }
+  .modal-footer .btn-save { padding: 9px 18px; font-size: 13px; font-weight: 500; border-radius: 8px; border: none; background: var(--ink); color: #fff; cursor: pointer; transition: all 0.15s; }
+  .modal-footer .btn-save:hover { background: #2d2d2a; }
+
+  /* Migration banner */
+  #migration-banner { display: none; background: var(--gold-light); border: 1px solid var(--gold); border-radius: 10px; padding: 14px 18px; margin: 24px 0; font-size: 13px; color: var(--ink); line-height: 1.6; gap: 12px; align-items: flex-start; }
+  #migration-banner.show { display: flex; }
+  #migration-banner .mig-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  #migration-banner .mig-text strong { display: block; font-size: 14px; margin-bottom: 4px; }
+  #migration-banner .mig-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .btn-mig-export { padding: 7px 14px; font-size: 12px; font-weight: 500; border-radius: 8px; border: none; background: var(--green); color: #fff; cursor: pointer; }
+  .btn-mig-dismiss { padding: 7px 14px; font-size: 12px; font-weight: 500; border-radius: 8px; border: 1px solid var(--border); background: #fff; cursor: pointer; color: var(--muted); }
+
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes sectionIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes scrollPulse { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
@@ -184,11 +263,11 @@
     <div class="hero-tag">Family Trip · 22 - 29 April 2026</div>
     <h1>Japan<span>Tokyo & Kawaguchiko</span></h1>
     <div class="hero-meta">
-      <div class="hero-meta-item"><div class="num">8</div><div class="lbl">Days</div></div>
+      <div class="hero-meta-item"><div class="num" id="stat-days">8</div><div class="lbl">Days</div></div>
       <div class="hero-divider"></div>
       <div class="hero-meta-item"><div class="num">5</div><div class="lbl">People</div></div>
       <div class="hero-divider"></div>
-      <div class="hero-meta-item"><div class="num">2</div><div class="lbl">Cities</div></div>
+      <div class="hero-meta-item"><div class="num" id="stat-cities">2</div><div class="lbl">Cities</div></div>
       <div class="hero-divider"></div>
       <div class="hero-meta-item"><div class="num">∞</div><div class="lbl">Memories</div></div>
     </div>
@@ -198,8 +277,12 @@
 
 <nav class="nav-strip">
   <div class="nav-inner" id="nav-inner">
-    <button class="nav-btn active" onclick="showSection('overview')">Overview</button>
-    <button class="nav-btn" id="essentials-nav-btn" onclick="showSection('essentials')">Essentials</button>
+    <button class="nav-btn active" data-section="overview" onclick="showSection('overview')">Overview</button>
+    <button class="nav-btn" id="essentials-nav-btn" data-section="essentials" onclick="showSection('essentials')">Essentials</button>
+    <div class="nav-spacer"></div>
+    <button class="edit-toggle-btn" id="edit-toggle" onclick="toggleEditMode()" title="Toggle edit mode">
+      <span>✏️</span> <span id="edit-toggle-label">Edit</span>
+    </button>
   </div>
 </nav>
 
@@ -209,11 +292,26 @@
   <div class="page-section active" id="sec-overview">
     <div class="section-title">Your Journey</div>
     <p class="section-sub">Tokyo (Days 1–5 & 8) → Kawaguchiko (Days 5–7) — curated for mixed mobility, nature lovers, and quieter experiences.</p>
-    <div class="live-badge"><span class="dot"></span> Live from Google Sheets — edit the sheet to update this page</div>
+    <div id="source-badge-container"></div>
+    <div id="migration-banner">
+      <div class="mig-icon">📋</div>
+      <div class="mig-text">
+        <strong>Data loaded from Google Sheets</strong>
+        To store this itinerary in your git repo, export it as <code>data/itinerary.json</code> and commit the file.
+        <div class="mig-actions">
+          <button class="btn-mig-export" onclick="exportJSON()">⬇ Export itinerary.json</button>
+          <button class="btn-mig-dismiss" onclick="dismissMigration()">Dismiss</button>
+        </div>
+      </div>
+    </div>
     <div class="overview-grid" id="overview-grid"></div>
   </div>
 
   <div id="day-sections"></div>
+
+  <div class="add-day-row" id="add-day-row">
+    <button class="btn-add-day" onclick="openDayModal(null)">＋ Add Day</button>
+  </div>
 
   <div class="page-section" id="sec-essentials">
     <div class="section-title">Essentials & Tips</div>
@@ -269,189 +367,606 @@
   <div style="margin-top:8px;font-size:11px;opacity:0.5">Made with love 🌸</div>
 </footer>
 
+<!-- Edit floating bar -->
+<div id="edit-bar">
+  <div class="bar-dirty-dot"></div>
+  <div class="bar-label"><strong>Edit Mode</strong></div>
+  <button class="bar-btn bar-btn-export" onclick="exportJSON()">⬇ Export itinerary.json</button>
+  <button class="bar-btn bar-btn-discard" onclick="discardChanges()">Discard changes</button>
+</div>
+
+<!-- Stop edit modal -->
+<div class="modal-overlay" id="stop-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="stop-modal-title">Edit Stop</div>
+      <button class="modal-close" onclick="closeModal('stop-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Stop Name</label>
+        <input class="form-input" id="f-stop-name" placeholder="e.g. Senso-ji Temple">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Time</label>
+        <input class="form-input" id="f-stop-time" placeholder="e.g. 09:00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags</label>
+        <input class="form-input" id="f-stop-tags" placeholder="culture,nature (comma-separated)">
+        <div class="form-hint">Available: nature, mobility, culture, food, transit, flight</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Note</label>
+        <textarea class="form-textarea" id="f-stop-note" placeholder="Description or notes about this stop"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Google Maps URL</label>
+        <input class="form-input" id="f-stop-maps-url" type="url" placeholder="https://maps.google.com/...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Image URL</label>
+        <input class="form-input" id="f-stop-image-url" type="url" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Options (alternatives)</label>
+        <input class="form-input" id="f-stop-options" placeholder="Option A | Option B | Option C">
+        <div class="form-hint">Separate options with |</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Option Notes</label>
+        <input class="form-input" id="f-stop-option-notes" placeholder="Note for A | Note for B | Note for C">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Option Maps URLs</label>
+        <input class="form-input" id="f-stop-option-urls" placeholder="https://... | https://... | https://...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('stop-modal')">Cancel</button>
+      <button class="btn-save" onclick="saveStopModal()">Save Stop</button>
+    </div>
+  </div>
+</div>
+
+<!-- Day edit modal -->
+<div class="modal-overlay" id="day-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="day-modal-title">Edit Day</div>
+      <button class="modal-close" onclick="closeModal('day-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Day Label</label>
+        <input class="form-input" id="f-day-label" placeholder="e.g. Day 1 — Wednesday">
+      </div>
+      <div class="form-group">
+        <label class="form-label">City</label>
+        <select class="form-select" id="f-day-city">
+          <option value="tokyo">Tokyo</option>
+          <option value="kawaguchiko">Kawaguchiko</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Day Title</label>
+        <input class="form-input" id="f-day-title" placeholder="e.g. Arrival & First Steps">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Day Description</label>
+        <textarea class="form-textarea" id="f-day-desc" placeholder="Brief description of the day's theme or plan"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Planner's Tip</label>
+        <textarea class="form-textarea" id="f-day-tip" placeholder="Insider tip or logistic note for the day"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('day-modal')">Cancel</button>
+      <button class="btn-save" onclick="saveDayModal()">Save Day</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ════════════════════════════════════════════════════════════════════
-//  STEP 1 — Paste your Google Sheet ID here
-//
-//  Find it in your sheet URL:
-//  https://docs.google.com/spreadsheets/d/  ← YOUR_ID_IS_HERE  /edit
-//
-const SHEET_ID = "1G89SwoGeUxs-4qtoexkj0fIFfQ9Uj5_Ix4BhqW_sM10";
-//
-//  STEP 2 — Make sure your tab is named exactly:  Itinerary
-const SHEET_TAB = "Itinerary (Raw)";
+//  Config
 // ════════════════════════════════════════════════════════════════════
+const JSON_PATH = "data/itinerary.json";
+
+// Google Sheets fallback (used for migration if JSON file is empty)
+const SHEET_ID = "1G89SwoGeUxs-4qtoexkj0fIFfQ9Uj5_Ix4BhqW_sM10";
+const SHEET_TAB = "Itinerary (Raw)";
+
+const LS_KEY = "japan-trip-itinerary-v1";
 
 const TAG_LABELS = { nature:"🌿 Nature", mobility:"♿ Easy access", culture:"🎌 Culture", food:"🍜 Food", transit:"🚌 Transit", flight: "✈️ Flight" };
 const DOT_COLORS = { nature:"#2d5a3d", mobility:"#1a3a5c", culture:"#b8860b", food:"#c0392b", transit:"#7a7060", flight:"#7a7069" };
 
-function dotColor(tags){ const t=(tags||"").split(",")[0].trim(); return DOT_COLORS[t]||"#7a7060"; }
+// ════════════════════════════════════════════════════════════════════
+//  App state
+// ════════════════════════════════════════════════════════════════════
+let state = {
+  days: [],          // array of day objects
+  editMode: false,
+  dirty: false,
+  dataSource: null,  // 'json' | 'sheets' | 'localstorage'
+};
 
-async function fetchSheet(){
-  if(SHEET_ID==="YOUR_SHEET_ID_HERE"){
-    showError(`<strong>⚠️ One quick setup step needed</strong>
-      Open <code>index.html</code> in any text editor, find <code>const SHEET_ID = "YOUR_SHEET_ID_HERE"</code>
-      near the bottom, and replace <code>YOUR_SHEET_ID_HERE</code> with your actual Google Sheet ID.<br><br>
-      Your Sheet ID is the long string in your sheet's URL:<br>
-      <code>https://docs.google.com/spreadsheets/d/<strong>THIS_PART</strong>/edit</code>`);
-    hideLoading(); return null;
+// ════════════════════════════════════════════════════════════════════
+//  Data loading
+// ════════════════════════════════════════════════════════════════════
+async function loadData() {
+  // 1. Try localStorage first (draft changes)
+  const lsRaw = localStorage.getItem(LS_KEY);
+  if (lsRaw) {
+    try {
+      const parsed = JSON.parse(lsRaw);
+      if (parsed && Array.isArray(parsed.days) && parsed.days.length > 0) {
+        state.days = parsed.days;
+        state.dataSource = 'localstorage';
+        state.dirty = true;
+        return;
+      }
+    } catch(e) { /* ignore */ }
   }
-  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_TAB)}`;
-  try{
-    const res=await fetch(url);
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const txt=await res.text();
-    const json=JSON.parse(txt.replace(/^[^(]*\(/,"").replace(/\);\s*$/,""));
-    return parseGviz(json);
-  }catch(e){
-    showError(`<strong>⚠️ Could not load data from Google Sheets</strong>
-      Please check:<br>
-      1. Your Sheet ID in <code>index.html</code> is correct<br>
-      2. The sheet is shared: <em>Anyone with the link → Viewer</em><br>
-      3. The tab is named exactly <strong>${SHEET_TAB}</strong><br>
+
+  // 2. Try local JSON file
+  try {
+    const res = await fetch(JSON_PATH + "?t=" + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.days) && data.days.length > 0) {
+        state.days = data.days;
+        state.dataSource = 'json';
+        return;
+      }
+    }
+  } catch(e) { /* file not found or empty, fall through */ }
+
+  // 3. Fallback: fetch from Google Sheets
+  await loadFromSheets();
+}
+
+async function loadFromSheets() {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_TAB)}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const txt = await res.text();
+    const json = JSON.parse(txt.replace(/^[^(]*\(/, "").replace(/\);\s*$/, ""));
+    const rows = parseGviz(json);
+    state.days = groupByDay(rows);
+    state.dataSource = 'sheets';
+  } catch(e) {
+    showError(`<strong>⚠️ Could not load itinerary</strong>
+      The <code>data/itinerary.json</code> file is empty and the Google Sheets fallback failed.<br><br>
+      Please either:<br>
+      1. Populate <code>data/itinerary.json</code> with your itinerary data, or<br>
+      2. Check your Google Sheets connection (make sure the sheet is shared publicly).<br>
       <small style="opacity:0.6">Error: ${e.message}</small>`);
-    hideLoading(); return null;
+    hideLoading();
   }
 }
 
-function parseGviz(json){
-  const cols=json.table.cols.map(c=>c.label.trim().toLowerCase().replace(/\s+/g,"_"));
+function parseGviz(json) {
+  const cols = json.table.cols.map(c => c.label.trim().toLowerCase().replace(/\s+/g, "_"));
   return json.table.rows
-    .filter(r=>r&&r.c&&r.c[0]&&r.c[0].v!==null)
-    .map(row=>{
-      const obj={};
-      row.c.forEach((cell,i)=>{ obj[cols[i]]=cell?(cell.v!==null?String(cell.v).trim():""):""; });
+    .filter(r => r && r.c && r.c[0] && r.c[0].v !== null)
+    .map(row => {
+      const obj = {};
+      row.c.forEach((cell, i) => { obj[cols[i]] = cell ? (cell.v !== null ? String(cell.v).trim() : "") : ""; });
       return obj;
     });
 }
 
-function groupByDay(rows){
-  const map={};
-  rows.forEach(r=>{
-    const n=r.day_number;
-    if(!map[n]) map[n]={ num:n, label:r.day_label||`Day ${n}`, city:(r.city||"tokyo").toLowerCase(), title:r.day_title||"", desc:r.day_description||"", tip:r.day_tip||"", stops:[] };
-    if(r.stop_name) map[n].stops.push({ time:r.stop_time||"", name:r.stop_name||"", tags:r.stop_tags||"", note:r.stop_note||"", maps_url:r.stop_maps_url||"", img_url:r.stop_image_url||"", options:r.stop_options||"", option_notes:r.stop_option_notes||"", option_urls:r.stop_option_urls||"" });
+function groupByDay(rows) {
+  const map = {};
+  rows.forEach(r => {
+    const n = r.day_number;
+    if (!map[n]) map[n] = {
+      num: n,
+      label: r.day_label || `Day ${n}`,
+      city: (r.city || "tokyo").toLowerCase(),
+      title: r.day_title || "",
+      desc: r.day_description || "",
+      tip: r.day_tip || "",
+      stops: []
+    };
+    if (r.stop_name) map[n].stops.push({
+      time: r.stop_time || "",
+      name: r.stop_name || "",
+      tags: r.stop_tags || "",
+      note: r.stop_note || "",
+      maps_url: r.stop_maps_url || "",
+      img_url: r.stop_image_url || "",
+      options: r.stop_options || "",
+      option_notes: r.stop_option_notes || "",
+      option_urls: r.stop_option_urls || ""
+    });
   });
-  return Object.values(map).sort((a,b)=>Number(a.num)-Number(b.num));
+  return Object.values(map).sort((a, b) => Number(a.num) - Number(b.num));
 }
 
-function renderNav(days){
-  const nav=document.getElementById("nav-inner");
-  const essBtn=document.getElementById("essentials-nav-btn");
-  days.forEach(d=>{
-    const btn=document.createElement("button");
-    btn.className="nav-btn";
-    btn.textContent=d.label;
-    btn.dataset.section=`day${d.num}`;
-    btn.onclick=()=>showSection(`day${d.num}`);
-    nav.insertBefore(btn,essBtn);
+// ════════════════════════════════════════════════════════════════════
+//  Persistence
+// ════════════════════════════════════════════════════════════════════
+function persistToLS() {
+  localStorage.setItem(LS_KEY, JSON.stringify({ days: state.days, ts: Date.now() }));
+  state.dirty = true;
+  document.body.classList.add("has-changes");
+}
+
+function clearLS() {
+  localStorage.removeItem(LS_KEY);
+  state.dirty = false;
+  document.body.classList.remove("has-changes");
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  Export
+// ════════════════════════════════════════════════════════════════════
+function exportJSON() {
+  const payload = {
+    _comment: "Generated by the Japan Trip itinerary editor. Edit via the webpage or directly in this file.",
+    days: state.days
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "itinerary.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+  // After export, offer to clear the LS draft
+  if (state.dirty) {
+    clearLS();
+    document.body.classList.remove("has-changes");
+  }
+  dismissMigration();
+}
+
+function discardChanges() {
+  if (!confirm("Discard all unsaved changes and reload from the saved file?")) return;
+  clearLS();
+  window.location.reload();
+}
+
+function dismissMigration() {
+  document.getElementById("migration-banner").classList.remove("show");
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  Edit mode
+// ════════════════════════════════════════════════════════════════════
+function toggleEditMode() {
+  state.editMode = !state.editMode;
+  document.body.classList.toggle("edit-mode", state.editMode);
+  const btn = document.getElementById("edit-toggle");
+  const lbl = document.getElementById("edit-toggle-label");
+  btn.classList.toggle("active", state.editMode);
+  lbl.textContent = state.editMode ? "Done" : "Edit";
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  Render
+// ════════════════════════════════════════════════════════════════════
+function dotColor(tags) {
+  const t = (tags || "").split(",")[0].trim();
+  return DOT_COLORS[t] || "#7a7060";
+}
+
+function renderAll() {
+  updateHeroStats();
+  renderSourceBadge();
+  renderNav();
+  renderOverview();
+  renderDays();
+  if (state.dataSource === 'sheets') {
+    document.getElementById("migration-banner").classList.add("show");
+  }
+  if (state.dirty) {
+    document.body.classList.add("has-changes");
+  }
+}
+
+function updateHeroStats() {
+  const days = state.days;
+  document.getElementById("stat-days").textContent = days.length;
+  const cities = new Set(days.map(d => d.city)).size;
+  document.getElementById("stat-cities").textContent = cities;
+}
+
+function renderSourceBadge() {
+  const c = document.getElementById("source-badge-container");
+  const labels = {
+    json: '<span class="dot"></span> Stored in repo — edit the page or <code>data/itinerary.json</code>',
+    sheets: '<span class="dot"></span> Loaded from Google Sheets (migration mode)',
+    localstorage: '<span class="dot"></span> Unsaved local draft — export to save to repo',
+  };
+  const classes = { json: 'local', sheets: 'sheets', localstorage: 'local' };
+  const src = state.dataSource || 'json';
+  c.innerHTML = `<div class="source-badge ${classes[src]}">${labels[src] || ''}</div>`;
+}
+
+function renderNav() {
+  const nav = document.getElementById("nav-inner");
+  const essBtn = document.getElementById("essentials-nav-btn");
+  const editBtn = document.getElementById("edit-toggle");
+  // Remove previously added day nav buttons
+  nav.querySelectorAll(".day-nav-btn").forEach(b => b.remove());
+  state.days.forEach(d => {
+    const btn = document.createElement("button");
+    btn.className = "nav-btn day-nav-btn";
+    btn.textContent = d.label;
+    btn.dataset.section = `day${d.num}`;
+    btn.onclick = () => showSection(`day${d.num}`);
+    nav.insertBefore(btn, essBtn);
   });
 }
 
-function renderOverview(days){
-  const grid=document.getElementById("overview-grid");
-  grid.innerHTML="";
-  days.forEach(d=>{
-    const preview=d.stops.slice(0,3).map(s=>s.name).join(" · ");
-    const el=document.createElement("div");
-    el.className=`ov-card ${d.city}`;
-    el.onclick=()=>showSection(`day${d.num}`);
-    el.innerHTML=`<div class="ov-badge ${d.city}">${d.city==="tokyo"?"🗼 Tokyo":"🗻 Kawaguchiko"}</div>
+function renderOverview() {
+  const grid = document.getElementById("overview-grid");
+  grid.innerHTML = "";
+  state.days.forEach(d => {
+    const preview = d.stops.slice(0, 3).map(s => s.name).join(" · ");
+    const el = document.createElement("div");
+    el.className = `ov-card ${d.city}`;
+    el.onclick = () => showSection(`day${d.num}`);
+    el.innerHTML = `<div class="ov-badge ${d.city}">${d.city === "tokyo" ? "🗼 Tokyo" : "🗻 Kawaguchiko"}</div>
       <div class="ov-day-num">${d.label}</div>
-      <div class="ov-title">${d.title}</div>
-      <div class="ov-stops">${preview}</div>`;
+      <div class="ov-title">${escHtml(d.title)}</div>
+      <div class="ov-stops">${escHtml(preview)}</div>`;
     grid.appendChild(el);
   });
 }
 
-function renderDays(days){
-  const container=document.getElementById("day-sections");
-  container.innerHTML="";
-  days.forEach(d=>{
-    const numStr=String(d.num).padStart(2,"0");
-    const stopsHtml=d.stops.map((s,i)=>{
-      const isLast=i===d.stops.length-1;
-      const tagHtml=(s.tags||"").split(",").map(t=>t.trim()).filter(Boolean)
-        .map(t=>`<span class="tag tag-${t}">${TAG_LABELS[t]||t}</span>`).join("");
-      const dc=dotColor(s.tags);
-      return `<div class="stop-row">
-        <div class="stop-time-col"><div class="stop-time">${s.time}</div></div>
-        <div class="stop-line-col">
-          <div class="stop-dot" style="border-color:${dc}"></div>
-          ${!isLast?'<div class="stop-connector"></div>':''}
-        </div>
-        <div class="stop-body"><div class="stop-card">
-          <div class="stop-card-body">
-            <div class="stop-name">${s.name}</div>
-            ${tagHtml?`<div class="stop-tags">${tagHtml}</div>`:''}
-            <div class="stop-note">${s.note}</div>
-            ${s.maps_url?`<a class="maps-link" href="${s.maps_url}" target="_blank" rel="noopener">📍 Open in Maps</a>`:''}
-            ${(()=>{
-              if(!s.options) return '';
-              const names  = s.options.split('|').map(x=>x.trim()).filter(Boolean);
-              const notes  = s.option_notes ? s.option_notes.split('|').map(x=>x.trim()) : [];
-              const urls   = s.option_urls  ? s.option_urls.split('|').map(x=>x.trim())  : [];
-              const rows   = names.map((name,i)=>`
-                <div class="option-row">
-                  <div class="option-top">
-                    ${i>0?'<span class="option-or">or</span>':''}
-                    <div class="option-name">${name}</div>
-                  </div>
-                  ${notes[i]?`<div class="option-note">${notes[i]}</div>`:''}
-                  ${urls[i]?`<a class="option-maps" href="${urls[i]}" target="_blank" rel="noopener">📍 Maps</a>`:''}
-                </div>`).join('');
-              return `<div class="options-label">Options</div><div class="options-list">${rows}</div>`;
-            })()}
-          </div>
-          ${s.img_url?`<img class="stop-card-img" src="${s.img_url}" alt="${s.name}" loading="lazy" onerror="this.classList.add('errored')">`:''}
-        </div></div>
-      </div>`;
-    }).join("");
-    const sec=document.createElement("div");
-    sec.className="page-section";
-    sec.id=`sec-day${d.num}`;
-    sec.innerHTML=`<div class="day-header">
+function renderDays() {
+  const container = document.getElementById("day-sections");
+  container.innerHTML = "";
+  state.days.forEach((d, di) => {
+    const numStr = String(d.num).padStart(2, "0");
+    const stopsHtml = d.stops.map((s, si) => buildStopHtml(d, s, si, si === d.stops.length - 1)).join("");
+
+    const sec = document.createElement("div");
+    sec.className = "page-section";
+    sec.id = `sec-day${d.num}`;
+    sec.innerHTML = `
+      <div class="day-header">
         <div>
-          <div class="day-eyebrow">${d.label} · ${d.city==="tokyo"?"Tokyo":"Kawaguchiko"}</div>
-          <div class="day-title">${d.title}</div>
-          <div class="day-desc">${d.desc}</div>
+          <div class="day-eyebrow">${escHtml(d.label)} · ${d.city === "tokyo" ? "Tokyo" : "Kawaguchiko"}</div>
+          <div class="day-title">${escHtml(d.title)}</div>
+          <div class="day-desc">${escHtml(d.desc)}</div>
+          <div class="day-edit-row">
+            <button onclick="openDayModal(${di})">✏️ Edit day info</button>
+            <button class="btn-add-stop" onclick="openStopModal(${di}, null)">＋ Add stop</button>
+            <button class="btn-delete-day" onclick="deleteDay(${di})">🗑 Delete day</button>
+          </div>
         </div>
         <div class="day-num-big">${numStr}</div>
       </div>
-      <div class="stops-grid">${stopsHtml}</div>
-      ${d.tip?`<div class="tip-box"><div style="font-size:20px;flex-shrink:0">✦</div><div><div class="tip-label">Planner's tip</div><div class="tip-text">${d.tip}</div></div></div>`:''}`;
+      <div class="stops-grid" id="stops-${di}">${stopsHtml}</div>
+      ${d.tip ? `<div class="tip-box"><div style="font-size:20px;flex-shrink:0">✦</div><div><div class="tip-label">Planner's tip</div><div class="tip-text">${escHtml(d.tip)}</div></div></div>` : ""}`;
     container.appendChild(sec);
   });
 }
 
-function showSection(id){
-  document.querySelectorAll(".page-section").forEach(s=>s.classList.remove("active"));
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
-  const sec=document.getElementById(`sec-${id}`);
-  if(sec) sec.classList.add("active");
-  const btn=document.querySelector(`.nav-btn[data-section="${id}"]`) ||
-             document.querySelector(`.nav-btn[onclick*="'${id}'"]`);
-  if(btn){ btn.classList.add("active"); btn.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"}); }
-  window.scrollTo({top:document.querySelector(".nav-strip").offsetTop,behavior:"smooth"});
+function buildStopHtml(d, s, si, isLast) {
+  const di = state.days.indexOf(d);
+  const tagHtml = (s.tags || "").split(",").map(t => t.trim()).filter(Boolean)
+    .map(t => `<span class="tag tag-${t}">${TAG_LABELS[t] || t}</span>`).join("");
+  const dc = dotColor(s.tags);
+
+  let optionsHtml = "";
+  if (s.options) {
+    const names  = s.options.split("|").map(x => x.trim()).filter(Boolean);
+    const notes  = s.option_notes ? s.option_notes.split("|").map(x => x.trim()) : [];
+    const urls   = s.option_urls  ? s.option_urls.split("|").map(x => x.trim())  : [];
+    const rows = names.map((name, i) => `
+      <div class="option-row">
+        <div class="option-top">
+          ${i > 0 ? '<span class="option-or">or</span>' : ''}
+          <div class="option-name">${escHtml(name)}</div>
+        </div>
+        ${notes[i] ? `<div class="option-note">${escHtml(notes[i])}</div>` : ""}
+        ${urls[i]  ? `<a class="option-maps" href="${escAttr(urls[i])}" target="_blank" rel="noopener">📍 Maps</a>` : ""}
+      </div>`).join("");
+    optionsHtml = `<div class="options-label">Options</div><div class="options-list">${rows}</div>`;
+  }
+
+  return `<div class="stop-row" id="stop-row-${di}-${si}">
+    <div class="stop-time-col"><div class="stop-time">${escHtml(s.time)}</div></div>
+    <div class="stop-line-col">
+      <div class="stop-dot" style="border-color:${dc}"></div>
+      ${!isLast ? '<div class="stop-connector"></div>' : ""}
+    </div>
+    <div class="stop-body"><div class="stop-card">
+      <div class="stop-edit-controls">
+        <button class="btn-edit" title="Edit stop" onclick="openStopModal(${di},${si})">✏️</button>
+        <button class="btn-delete" title="Delete stop" onclick="deleteStop(${di},${si})">🗑</button>
+      </div>
+      <div class="stop-card-body">
+        <div class="stop-name">${escHtml(s.name)}</div>
+        ${tagHtml ? `<div class="stop-tags">${tagHtml}</div>` : ""}
+        <div class="stop-note">${escHtml(s.note)}</div>
+        ${s.maps_url ? `<a class="maps-link" href="${escAttr(s.maps_url)}" target="_blank" rel="noopener">📍 Open in Maps</a>` : ""}
+        ${optionsHtml}
+      </div>
+      ${s.img_url ? `<img class="stop-card-img" src="${escAttr(s.img_url)}" alt="${escAttr(s.name)}" loading="lazy" onerror="this.classList.add('errored')">` : ""}
+    </div></div>
+  </div>`;
 }
 
-function showError(msg){ const el=document.getElementById("error-banner"); el.style.display="block"; el.innerHTML=msg; showSection("overview"); }
-function hideLoading(){ const el=document.getElementById("loading-screen"); el.classList.add("fade-out"); setTimeout(()=>el.remove(),700); }
+// Re-render just the stops grid for a given day index
+function rerenderDayStops(di) {
+  const d = state.days[di];
+  const container = document.getElementById(`stops-${di}`);
+  if (!container) { renderAll(); return; } // fallback full re-render
+  container.innerHTML = d.stops.map((s, si) => buildStopHtml(d, s, si, si === d.stops.length - 1)).join("");
+  // Also refresh overview card
+  renderOverview();
+}
 
-// Fix nav button selectors after render
-document.querySelectorAll(".nav-btn").forEach(b=>{
-  const m=b.getAttribute("onclick");
-  if(m){ const id=m.match(/'([^']+)'/)?.[1]; if(id) b.dataset.section=id; }
+// ════════════════════════════════════════════════════════════════════
+//  Navigation
+// ════════════════════════════════════════════════════════════════════
+function showSection(id) {
+  document.querySelectorAll(".page-section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  const sec = document.getElementById(`sec-${id}`);
+  if (sec) sec.classList.add("active");
+  const btn = document.querySelector(`.nav-btn[data-section="${id}"]`);
+  if (btn) { btn.classList.add("active"); btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" }); }
+  window.scrollTo({ top: document.querySelector(".nav-strip").offsetTop, behavior: "smooth" });
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  CRUD operations
+// ════════════════════════════════════════════════════════════════════
+
+// --- Stop modal ---
+let _stopCtx = null; // { di, si } or { di, si: null } for new
+
+function openStopModal(di, si) {
+  _stopCtx = { di, si };
+  const isNew = si === null;
+  document.getElementById("stop-modal-title").textContent = isNew ? "Add Stop" : "Edit Stop";
+  const s = isNew ? {} : state.days[di].stops[si];
+  document.getElementById("f-stop-name").value        = s.name         || "";
+  document.getElementById("f-stop-time").value        = s.time         || "";
+  document.getElementById("f-stop-tags").value        = s.tags         || "";
+  document.getElementById("f-stop-note").value        = s.note         || "";
+  document.getElementById("f-stop-maps-url").value    = s.maps_url     || "";
+  document.getElementById("f-stop-image-url").value   = s.img_url      || "";
+  document.getElementById("f-stop-options").value     = s.options      || "";
+  document.getElementById("f-stop-option-notes").value= s.option_notes || "";
+  document.getElementById("f-stop-option-urls").value = s.option_urls  || "";
+  openModal("stop-modal");
+}
+
+function saveStopModal() {
+  if (!_stopCtx) return;
+  const { di, si } = _stopCtx;
+  const stop = {
+    name:         document.getElementById("f-stop-name").value.trim(),
+    time:         document.getElementById("f-stop-time").value.trim(),
+    tags:         document.getElementById("f-stop-tags").value.trim(),
+    note:         document.getElementById("f-stop-note").value.trim(),
+    maps_url:     document.getElementById("f-stop-maps-url").value.trim(),
+    img_url:      document.getElementById("f-stop-image-url").value.trim(),
+    options:      document.getElementById("f-stop-options").value.trim(),
+    option_notes: document.getElementById("f-stop-option-notes").value.trim(),
+    option_urls:  document.getElementById("f-stop-option-urls").value.trim(),
+  };
+  if (!stop.name) { alert("Stop name is required."); return; }
+  if (si === null) {
+    state.days[di].stops.push(stop);
+  } else {
+    state.days[di].stops[si] = stop;
+  }
+  persistToLS();
+  rerenderDayStops(di);
+  closeModal("stop-modal");
+}
+
+function deleteStop(di, si) {
+  if (!confirm(`Delete stop "${state.days[di].stops[si].name}"?`)) return;
+  state.days[di].stops.splice(si, 1);
+  persistToLS();
+  rerenderDayStops(di);
+}
+
+// --- Day modal ---
+let _dayCtx = null; // di or null for new
+
+function openDayModal(di) {
+  _dayCtx = di;
+  const isNew = di === null;
+  document.getElementById("day-modal-title").textContent = isNew ? "Add Day" : "Edit Day";
+  const d = isNew ? {} : state.days[di];
+  document.getElementById("f-day-label").value = d.label || "";
+  document.getElementById("f-day-city").value  = d.city  || "tokyo";
+  document.getElementById("f-day-title").value = d.title || "";
+  document.getElementById("f-day-desc").value  = d.desc  || "";
+  document.getElementById("f-day-tip").value   = d.tip   || "";
+  openModal("day-modal");
+}
+
+function saveDayModal() {
+  const isNew = _dayCtx === null;
+  const di = _dayCtx;
+  const dayData = {
+    label: document.getElementById("f-day-label").value.trim(),
+    city:  document.getElementById("f-day-city").value,
+    title: document.getElementById("f-day-title").value.trim(),
+    desc:  document.getElementById("f-day-desc").value.trim(),
+    tip:   document.getElementById("f-day-tip").value.trim(),
+  };
+  if (!dayData.label) { alert("Day label is required."); return; }
+  if (isNew) {
+    const maxNum = state.days.reduce((m, d) => Math.max(m, Number(d.num)), 0);
+    state.days.push({ num: maxNum + 1, ...dayData, stops: [] });
+  } else {
+    Object.assign(state.days[di], dayData);
+  }
+  persistToLS();
+  // Full re-render needed for new days / nav updates
+  const currentSection = document.querySelector(".page-section.active")?.id?.replace("sec-", "") || "overview";
+  renderAll();
+  showSection(currentSection);
+  closeModal("day-modal");
+}
+
+function deleteDay(di) {
+  const d = state.days[di];
+  if (!confirm(`Delete entire day "${d.label}" and all its stops?`)) return;
+  state.days.splice(di, 1);
+  persistToLS();
+  renderAll();
+  showSection("overview");
+}
+
+// ════════════════════════════════════════════════════════════════════
+//  Modal helpers
+// ════════════════════════════════════════════════════════════════════
+function openModal(id) {
+  document.getElementById(id).classList.add("open");
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove("open");
+}
+// Close modal on overlay click
+document.querySelectorAll(".modal-overlay").forEach(el => {
+  el.addEventListener("click", e => { if (e.target === el) closeModal(el.id); });
+});
+// Close modals with Escape
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") document.querySelectorAll(".modal-overlay.open").forEach(el => el.classList.remove("open"));
 });
 
-(async()=>{
-  const rows=await fetchSheet();
-  if(!rows) return;
-  const days=groupByDay(rows);
-  if(!days.length){ showError("<strong>⚠️ Sheet appears empty</strong> Make sure the <strong>Itinerary</strong> tab has data and headers match the template."); hideLoading(); return; }
-  renderNav(days);
-  renderOverview(days);
-  renderDays(days);
+// ════════════════════════════════════════════════════════════════════
+//  Utilities
+// ════════════════════════════════════════════════════════════════════
+function escHtml(str) {
+  return (str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function escAttr(str) {
+  return (str || "").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+function showError(msg) { const el = document.getElementById("error-banner"); el.style.display = "block"; el.innerHTML = msg; showSection("overview"); }
+function hideLoading() { const el = document.getElementById("loading-screen"); el.classList.add("fade-out"); setTimeout(() => el.remove(), 700); }
+
+// ════════════════════════════════════════════════════════════════════
+//  Init
+// ════════════════════════════════════════════════════════════════════
+(async () => {
+  await loadData();
+  if (!state.days.length) {
+    // Show empty state — edit mode will let you add days
+    state.days = [];
+    state.dataSource = state.dataSource || 'json';
+  }
+  renderAll();
   hideLoading();
 })();
 </script>
