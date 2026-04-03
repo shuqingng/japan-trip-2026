@@ -6,15 +6,15 @@
 <title>My Trips</title>
 <link rel="icon" href="https://em-content.zobj.net/source/twitter/376/world-map_1f5fa-fe0f.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1a1a18;
-    --paper: #f5f0e8;
-    --paper2: #ede7d9;
-    --muted: #7a7060;
-    --border: rgba(26,26,24,0.12);
-    --shadow: 0 2px 20px rgba(26,26,24,0.08);
+    --ink: #1a1b2e;
+    --paper: #f4f3f7;
+    --paper2: #e9e8f0;
+    --muted: #6e6b80;
+    --border: rgba(26,27,46,0.11);
+    --shadow: 0 2px 20px rgba(26,27,46,0.07);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
@@ -22,7 +22,7 @@
   /* HEADER */
   .site-header {
     background: var(--ink);
-    padding: 64px 24px 56px;
+    padding: 72px 24px 64px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -30,23 +30,30 @@
   .site-header-bg {
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse 70% 60% at 20% 50%, rgba(192,57,43,0.15) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 60% at 80% 30%, rgba(45,90,61,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 50% at 60% 80%, rgba(184,134,11,0.10) 0%, transparent 60%);
+      radial-gradient(ellipse 80% 70% at 10% 40%, rgba(14,165,233,0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 55% 60% at 88% 25%, rgba(99,102,241,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 55% at 50% 95%, rgba(20,184,166,0.12) 0%, transparent 60%);
+  }
+  /* Subtle grid texture */
+  .site-header-grid {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
   .site-header-inner { position: relative; z-index: 1; }
   .site-eyebrow {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase;
-    color: rgba(255,255,255,0.35); margin-bottom: 16px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35); margin-bottom: 20px;
   }
   .site-title {
-    font-family: 'Shippori Mincho', serif;
-    font-size: clamp(40px, 8vw, 80px);
-    font-weight: 700; color: #fff; line-height: 1;
-    letter-spacing: -0.02em;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 9vw, 88px);
+    font-weight: 800; color: #fff; line-height: 1;
+    letter-spacing: -0.01em;
   }
   .site-sub {
-    margin-top: 14px; font-size: 14px; color: rgba(255,255,255,0.4); letter-spacing: 0.02em;
+    margin-top: 16px; font-size: 14px; color: rgba(255,255,255,0.38); letter-spacing: 0.04em;
   }
 
   /* MAIN */
@@ -93,11 +100,10 @@
     background: linear-gradient(to bottom, rgba(26,26,24,0.25) 0%, rgba(26,26,24,0.75) 100%);
   }
 
-  /* Mt Fuji SVG placeholder shown when no cover image */
-  .trip-card-fuji {
-    position: absolute; bottom: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 120%; opacity: 0.12;
+  /* Horizon SVG placeholder shown when no cover image */
+  .trip-card-horizon {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    width: 100%; opacity: 0.14;
   }
 
   .trip-card-body {
@@ -112,9 +118,9 @@
     padding: 4px 10px; border-radius: 20px; backdrop-filter: blur(4px);
   }
   .trip-card-title {
-    font-family: 'Shippori Mincho', serif;
-    font-size: clamp(32px, 5vw, 48px);
-    font-weight: 700; color: #fff; line-height: 1; letter-spacing: -0.02em;
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4.5vw, 44px);
+    font-weight: 700; color: #fff; line-height: 1.05; letter-spacing: -0.01em;
     margin-bottom: 6px;
   }
   .trip-card-subtitle {
@@ -148,13 +154,14 @@
   #loading { text-align: center; padding: 60px 0; color: var(--muted); font-size: 13px; letter-spacing: 0.1em; }
 
   /* FOOTER */
-  footer { background: var(--ink); color: rgba(255,255,255,0.25); text-align: center; padding: 28px 24px; font-size: 12px; letter-spacing: 0.05em; }
+  /* footer { background: var(--ink); color: rgba(255,255,255,0.25); text-align: center; padding: 28px 24px; font-size: 12px; letter-spacing: 0.05em; } */
 </style>
 </head>
 <body>
 
 <header class="site-header">
   <div class="site-header-bg"></div>
+  <div class="site-header-grid"></div>
   <div class="site-header-inner">
     <div class="site-eyebrow">Travel Journal</div>
     <div class="site-title">My Trips</div>
@@ -171,7 +178,7 @@
   <div class="trips-grid" id="trips-grid" style="display:none"></div>
 </main>
 
-<footer>Made with love 🌸</footer>
+<!-- <footer>Made with love 🌸</footer> -->
 
 <script>
 async function loadTrips() {
@@ -215,14 +222,16 @@ function render(trips) {
       bg.style.backgroundImage = `url('${t.coverImage}')`;
     } else {
       bg.style.background = buildPaletteGradient(t.palette);
-      // Mt Fuji SVG for trips without a photo
-      const fuji = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      fuji.setAttribute("class", "trip-card-fuji");
-      fuji.setAttribute("viewBox", "0 0 900 300");
-      fuji.setAttribute("fill", "none");
-      fuji.innerHTML = `<path d="M0 300 L200 300 L450 30 L700 300 L900 300Z" fill="white"/>
-        <path d="M380 80 L450 30 L520 80 L490 80 L450 55 L410 80Z" fill="white"/>`;
-      bg.appendChild(fuji);
+      // Horizon SVG for trips without a cover photo
+      const horizon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      horizon.setAttribute("class", "trip-card-horizon");
+      horizon.setAttribute("viewBox", "0 0 900 200");
+      horizon.setAttribute("fill", "none");
+      horizon.setAttribute("preserveAspectRatio", "none");
+      horizon.innerHTML = `
+        <path d="M0 200 L0 130 Q80 80 180 110 Q280 140 380 70 Q480 0 580 50 Q680 100 780 60 Q860 30 900 50 L900 200Z" fill="white"/>
+        <path d="M0 200 L0 160 Q120 130 240 150 Q360 170 480 130 Q600 90 720 120 Q820 145 900 125 L900 200Z" fill="white" opacity="0.5"/>`;
+      bg.appendChild(horizon);
     }
 
     const overlay = document.createElement("div");
@@ -250,15 +259,15 @@ function render(trips) {
     grid.appendChild(a);
   });
 
-  // "Add trip" placeholder
-  const add = document.createElement("div");
-  add.className = "trip-card-add";
-  add.innerHTML = `
-    <div class="trip-card-add-icon">＋</div>
-    <div class="trip-card-add-label">Add a trip</div>
-    <div class="trip-card-add-hint">Create a new folder under trips/ and add it to trips.json</div>
-  `;
-  grid.appendChild(add);
+  // // "Add trip" placeholder
+  // const add = document.createElement("div");
+  // add.className = "trip-card-add";
+  // add.innerHTML = `
+  //   <div class="trip-card-add-icon">＋</div>
+  //   <div class="trip-card-add-label">Add a trip</div>
+  //   <div class="trip-card-add-hint">Create a new folder under trips/ and add it to trips.json</div>
+  // `;
+  // grid.appendChild(add);
 }
 
 loadTrips();
