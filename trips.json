@@ -10,22 +10,5 @@
     "path": "trips/japan-2026/",
     "status": "upcoming",
     "palette": ["#c0392b", "#2d5a3d", "#b8860b"]
-<<<<<<< HEAD
   }
 ]
-=======
-  },
-  {
-    "id": "japan-summer-2026",
-    "title": "Japan",
-    "subtitle": "Kofu & Matsumoto",
-    "dateRange": "6 August 2026 - 20 August 2026",
-    "tripType": "Solo Trip",
-    "people": 1,
-    "coverImage": null,
-    "path": "trips/japan-summer-2026/",
-    "status": "upcoming",
-    "palette": ["#c0392b", "#2d5a3d", "#b8860b"]
-  }
-]
->>>>>>> bccb69e6774730742779844bcaafe86f66c0810d
