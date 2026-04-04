@@ -985,15 +985,6 @@
       ]
     },
     {
-      "title": "🚌 Getting Around",
-      "items": [
-        "<strong>IC Card:</strong> Get Suica or Pasmo at the airport",
-        "<strong>Water bus:</strong> Hamarikyu → Asakusa, 40 min, fully scenic",
-        "<strong>Kawaguchiko:</strong> Rental car is essential for flexibility",
-        "<strong>Highway bus:</strong> Shinjuku Bus Terminal → Kawaguchiko (~2 hrs)"
-      ]
-    },
-    {
       "title": "🍜 Food to Try",
       "items": [
         "<strong>Hōtō noodles</strong> — Yamanashi's thick miso noodle soup; essential in Kawaguchiko",
@@ -1001,6 +992,12 @@
         "<strong>Matcha & wagashi</strong> — at Hamarikyu's Nakajima Teahouse",
         "<strong>Tempura</strong> — classic Tokyo dinner in Asakusa's backstreets",
         "<strong>Lavender ice cream</strong> — at Oishi Park's lakeside café"
+      ]
+    },
+    {
+      "title": "🧑🏻‍🚒 Safety Information",
+      "items": [
+        "<strong>What to do in an emergency: </strong><a href=\"https://www.jnto.go.jp/safety-tips/eng/cmcard/index.html\">Safety Tips and Phrases</a>"
       ]
     }
   ]
