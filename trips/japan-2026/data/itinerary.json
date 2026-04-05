@@ -33,9 +33,10 @@
           "time": "Morning 09:25",
           "tags": "flight",
           "booked": null,
-          "note": "Singapore Airlines SQ12\nDeparts at 09:15, arrives at Narita Terminal 1 at 17:30\nFlight departs from Changi Airport T3\n3 x Business, 2 x Economy",
+          "note": "Singapore Airlines SQ12\nDeparts at 09:15, arrives at Narita Terminal 1 at 17:30\nFlight departs from Changi Airport T3\n3 x Business, 2 x Economy<br>\nBaggage: 30kg for economy, 40kg for business",
           "maps_url": "",
           "parking_url": "",
+          "ticket_url": "",
           "img_url": "",
           "options": []
         },
@@ -913,9 +914,10 @@
           "time": "Afternoon 16:50",
           "tags": "flight",
           "booked": true,
-          "note": "Zipair ZG053<br> Departs at 16:50, arrives in Singapore at 23:00<br>\nNRT Terminal 1 - SIN Terminal 1<br>\n2 x LieFlat, 3 x Economy",
+          "note": "Zipair ZG053<br> Departs at 16:50, arrives in Singapore at 23:00<br>\nNRT Terminal 1 - SIN Terminal 1<br>\n2 x LieFlat, 3 x Economy<br>\nBaggage: 1 piece x 30kg per person",
           "maps_url": "",
           "parking_url": "",
+          "ticket_url": "",
           "img_url": "",
           "options": []
         }
