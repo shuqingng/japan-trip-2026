@@ -20,22 +20,44 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    # Repository Actions secrets (Settings → Secrets and variables → Actions).
+    # If you also define these names under the github-pages environment, those values override repo secrets.
+    env:
+      APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
+      APPS_SCRIPT_TOKEN: ${{ secrets.APPS_SCRIPT_TOKEN }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Generate atlas-env.js
-        env:
-          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
-          APPS_SCRIPT_TOKEN: ${{ secrets.APPS_SCRIPT_TOKEN }}
+      - name: Verify Actions secrets are set
         run: |
-          cat > atlas-env.js <<EOF
-          window.__ATLAS_ENV__ = {
-            APPS_SCRIPT_URL:   "${APPS_SCRIPT_URL}",
-            APPS_SCRIPT_TOKEN: "${APPS_SCRIPT_TOKEN}"
-          };
-          EOF
+          missing=0
+          if [ -z "${APPS_SCRIPT_URL}" ]; then
+            echo "::error::APPS_SCRIPT_URL is empty. Add repository secret APPS_SCRIPT_URL (Settings → Secrets and variables → Actions), or set it on the github-pages environment."
+            missing=1
+          fi
+          if [ -z "${APPS_SCRIPT_TOKEN}" ]; then
+            echo "::error::APPS_SCRIPT_TOKEN is empty. Add repository secret APPS_SCRIPT_TOKEN (Settings → Secrets and variables → Actions), or set it on the github-pages environment."
+            missing=1
+          fi
+          exit "$missing"
+
+      - name: Generate atlas-env.js
+        run: |
+          python3 << 'PY'
+          import json
+          import os
+
+          cfg = {
+              "APPS_SCRIPT_URL": os.environ.get("APPS_SCRIPT_URL", ""),
+              "APPS_SCRIPT_TOKEN": os.environ.get("APPS_SCRIPT_TOKEN", ""),
+          }
+          with open("atlas-env.js", "w", encoding="utf-8") as f:
+              f.write("window.__ATLAS_ENV__ = ")
+              json.dump(cfg, f, indent=2)
+              f.write(";\n")
+          PY
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
