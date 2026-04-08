@@ -368,10 +368,10 @@
     <button class="nav-btn" id="accoms-nav-btn" data-section="accoms" onclick="showSection('accoms')">Accoms</button>
     <button class="nav-btn" id="essentials-nav-btn" data-section="essentials" onclick="showSection('essentials')">Essentials</button>
     <div class="nav-spacer"></div>
-    <button class="edit-toggle-btn" id="edit-toggle" onclick="toggleEditMode()" title="Toggle edit mode" style="display:none">
+    <button class="edit-toggle-btn" id="edit-toggle" onclick="toggleEditMode()" title="Toggle edit mode">
       <span>✏️</span> <span id="edit-toggle-label">Edit</span>
     </button>
-    <div id="sign-in-btn" style="flex-shrink:0;margin:8px 0 8px 8px"></div>
+    <div id="sign-in-btn" style="flex-shrink:0;margin:8px 0 8px 8px;display:none"></div>
     <div class="nav-user" id="nav-user" style="display:none">
       <span class="nav-user-email" id="user-email"></span>
       <button class="nav-sign-out" onclick="_signOut()">Sign out</button>
@@ -633,6 +633,7 @@ function _onSignedIn(credential) {
     const payload = JSON.parse(atob(credential.split('.')[1]));
     document.getElementById('user-email').textContent = payload.email;
     document.getElementById('nav-user').style.display = 'flex';
+    document.getElementById('sign-in-btn').style.display = 'none';
     const refreshIn = Math.max(payload.exp * 1000 - Date.now() - 5 * 60 * 1000, 10000);
     setTimeout(() => google.accounts.id.prompt(), refreshIn);
   } catch(e) {}
@@ -646,7 +647,6 @@ async function _refreshRoleAndUI() {
   try {
     const list = await _apiGet('_trips-list');
     if (_isOwner) {
-      document.getElementById('edit-toggle').style.display = '';
       document.getElementById('save-drive-btn').style.display = '';
     }
   } catch(e) {}
@@ -666,7 +666,6 @@ function _activateEditIfOwner() {
 function _signOut() {
   _idToken = null; _isOwner = false;
   google.accounts.id.disableAutoSelect();
-  document.getElementById('edit-toggle').style.display = 'none';
   document.getElementById('save-drive-btn').style.display = 'none';
   document.getElementById('nav-user').style.display = 'none';
   if (state.editMode) _doToggleEditMode(); // exit edit mode
@@ -923,8 +922,9 @@ function dismissMigration() {
 // ════════════════════════════════════════════════════════════════════
 function toggleEditMode() {
   if (!_idToken) {
-    // Not signed in — prompt Google Sign-In; _onSignedIn will activate edit if owner
+    // Not signed in — reveal sign-in button and prompt Google Sign-In
     _pendingEdit = true;
+    document.getElementById('sign-in-btn').style.display = '';
     google.accounts.id.prompt();
     return;
   }
@@ -1802,8 +1802,6 @@ async function _initTrip() {
   }
   renderAll();
   hideLoading();
-  // Edit toggle is always visible; it prompts sign-in when clicked if not authenticated
-  document.getElementById('edit-toggle').style.display = '';
 }
 </script>
 </body>
