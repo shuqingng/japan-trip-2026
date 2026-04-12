@@ -1112,7 +1112,7 @@ function renderDays() {
         <div>
           <div class="day-eyebrow">${escHtml(computeDayLabel(di, d.date))} · ${escHtml(getCityInfo(d.city).emoji + " " + getCityInfo(d.city).name)}</div>
           <div class="day-title">${escHtml(d.title)}</div>
-          <div class="day-desc">${renderNote(d.desc)}</div>
+          <div class="day-desc">${renderNoteHtml(d.desc)}</div>
           <div class="day-edit-row">
             <button onclick="openDayModal(${di})">✏️ Edit day info</button>
             <button class="btn-add-stop" onclick="openStopModal(${di}, null)">＋ Add stop</button>
@@ -1144,7 +1144,7 @@ function buildStopHtml(d, s, si, isLast) {
           ${i > 0 ? '<span class="option-or">or</span>' : ''}
           <div class="option-name">${escHtml(opt.name)}</div>
         </div>
-        ${opt.note ? `<div class="option-note">${renderNote(opt.note)}</div>` : ""}
+        ${opt.note ? `<div class="option-note">${renderNoteHtml(opt.note)}</div>` : ""}
         ${opt.url  ? `<a class="option-maps" href="${escAttr(opt.url)}" target="_blank" rel="noopener">📍 Maps</a>` : ""}
       </div>`).join("");
     optionsHtml = `<div class="options-label">Options</div><div class="options-list">${rows}</div>`;
@@ -1169,7 +1169,7 @@ function buildStopHtml(d, s, si, isLast) {
       <div class="stop-card-body">
         <div class="stop-name">${escHtml(s.name)}</div>
         ${tagHtml || s.booked !== null && s.booked !== undefined ? `<div class="stop-tags">${tagHtml}${s.booked === true ? '<span class="booked-badge booked-yes">✓ Booked</span>' : s.booked === false ? '<span class="booked-badge booked-no">✗ Not booked</span>' : ''}</div>` : ""}
-        <div class="stop-note">${renderNote(s.note)}</div>
+        <div class="stop-note">${renderNoteHtml(s.note)}</div>
         ${s.maps_url ? `<a class="maps-link" href="${escAttr(s.maps_url)}" target="_blank" rel="noopener">📍 Open in Maps</a>` : ""}
         ${s.parking_url ? `<a class="maps-link maps-link-parking" href="${escAttr(s.parking_url)}" target="_blank" rel="noopener">🅿️ Parking</a>` : ""}
         ${s.ticket_url ? `<a class="maps-link maps-link-ticket" href="${escAttr(s.ticket_url)}" target="_blank" rel="noopener">🎫 Tickets</a>` : ""}
